@@ -1,0 +1,386 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vishal Kamble | Software Developer</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #222;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        nav {
+            background: #111827;
+            color: white;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h2 {
+            color: #38bdf8;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            color: #38bdf8;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 750px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 span {
+            color: #38bdf8;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #dbeafe;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #38bdf8;
+            color: #0f172a;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: white;
+        }
+
+        /* Sections */
+        section {
+            padding: 70px 8%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h2 {
+            font-size: 32px;
+            color: #111827;
+        }
+
+        .section-title p {
+            color: #64748b;
+        }
+
+        /* About */
+        .about {
+            max-width: 900px;
+            margin: auto;
+            text-align: center;
+            font-size: 18px;
+            color: #475569;
+        }
+
+        /* Skills */
+        .skills {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .skill {
+            background: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            font-weight: bold;
+        }
+
+        .skill:hover {
+            transform: translateY(-5px);
+            transition: 0.3s;
+        }
+
+        /* Projects */
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .project {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .project h3 {
+            color: #1d4ed8;
+            margin-bottom: 10px;
+        }
+
+        .project p {
+            color: #64748b;
+        }
+
+        /* Contact */
+        .contact {
+            text-align: center;
+            background: #e2e8f0;
+        }
+
+        .contact p {
+            margin: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        footer span {
+            color: #38bdf8;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                gap: 12px;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .hero p {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <h2>VK.</h2>
+
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <h1>
+                Hi, I'm <span>Vishal Kamble</span>
+            </h1>
+
+            <p>
+                Software Developer | Java Developer | DevOps Enthusiast
+            </p>
+
+            <a href="#projects" class="btn">
+                View My Work
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- About -->
+    <section id="about">
+
+        <div class="section-title">
+            <h2>About Me</h2>
+            <p>Who I am</p>
+        </div>
+
+        <div class="about">
+
+            <p>
+                I am a Software Developer passionate about building
+                reliable applications and learning modern technologies.
+                I work with Java, Spring Boot, React, Docker,
+                Git, GitHub Actions and AWS.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Skills -->
+    <section id="skills">
+
+        <div class="section-title">
+            <h2>My Skills</h2>
+            <p>Technologies I work with</p>
+        </div>
+
+        <div class="skills">
+
+            <div class="skill">Java</div>
+            <div class="skill">Spring Boot</div>
+            <div class="skill">React</div>
+            <div class="skill">MySQL</div>
+            <div class="skill">Git & GitHub</div>
+            <div class="skill">Docker</div>
+            <div class="skill">GitHub Actions</div>
+            <div class="skill">AWS</div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Projects -->
+    <section id="projects">
+
+        <div class="section-title">
+            <h2>Projects</h2>
+            <p>Some of my work</p>
+        </div>
+
+        <div class="projects">
+
+            <div class="project">
+
+                <h3>Task Manager</h3>
+
+                <p>
+                    A web-based task management application
+                    developed using React and Spring Boot.
+                </p>
+
+            </div>
+
+
+            <div class="project">
+
+                <h3>CI/CD Automation</h3>
+
+                <p>
+                    Automated application build, testing and
+                    deployment using GitHub Actions and AWS EC2.
+                </p>
+
+            </div>
+
+
+            <div class="project">
+
+                <h3>Docker Application</h3>
+
+                <p>
+                    Containerized applications using Docker
+                    and automated deployment workflows.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Contact -->
+    <section id="contact" class="contact">
+
+        <div class="section-title">
+            <h2>Contact Me</h2>
+            <p>Let's connect</p>
+        </div>
+
+        <p>
+            Email: vishal@example.com
+        </p>
+
+        <p>
+            GitHub: github.com/yourusername
+        </p>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            © 2026 <span>Vishal Kamble</span>.
+            All Rights Reserved.
+        </p>
+
+        <p>
+            Deployed using GitHub Actions 🚀
+        </p>
+
+    </footer>
+
+</body>
+</html>
