@@ -1,0 +1,40 @@
+name: HTML Application CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Application
+        run: |
+          echo "Building application..."
+          test -f index.html
+          echo "Build completed successfully!"
+
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Tests
+        run: |
+          echo "Testing..............."
+          test -f index.html
+          grep -q "<html" index.html
+          grep -q "</html>" index.html
+          echo "HTML file test passed!"
+          echo "Testing completed successfully!"
