@@ -64,6 +64,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY_B64 }}" | base64 --decode > ~/.ssh/ec2_key
           chmod 600 ~/.ssh/ec2_key
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts || true
 
       - name: Validate SSH Key
         run: |
