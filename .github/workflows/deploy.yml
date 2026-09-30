@@ -1,9 +1,11 @@
 name: HTML Application CI/CD
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -35,3 +37,47 @@ jobs:
           grep -q "</html>" index.html
           echo "HTML file test passed!"
           echo "Testing completed successfully!"
+
+  deploy:
+    name: Deploy
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Prepare Deployment
+        run: |
+          echo "Preparing application for deployment..."
+          echo "Deployment preparation completed!"
+
+  deploy-to-ec2:
+    name: Deploy to EC2
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key
+          chmod 600 ~/.ssh/ec2_key
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy Website to EC2
+        run: |
+          echo "Deploying website to EC2..."
+
+          scp -i ~/.ssh/ec2_key \
+            index.html \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/tmp/index.html
+
+          ssh -i ~/.ssh/ec2_key \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
+            "sudo cp /tmp/index.html /var/www/html/index.html && sudo systemctl reload nginx"
+
+          echo "Website deployed successfully!"
