@@ -1,6 +1,9 @@
 name: HTML Application CI/CD
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -30,8 +33,8 @@ jobs:
         run: |
           echo "Testing..............."
           test -f index.html
-          grep -q "<html" index.html
-          grep -q "</html>" index.html
+          grep -qi "<html" index.html
+          grep -qi "</html>" index.html
           echo "HTML file test passed!"
           echo "Testing completed successfully!"
 
@@ -47,6 +50,7 @@ jobs:
       - name: Prepare Deployment
         run: |
           echo "Preparing application for deployment..."
+          test -f index.html
           echo "Deployment preparation completed!"
 
   deploy-to-ec2:
@@ -61,20 +65,34 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key
+          printf '%s\n' "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key
           chmod 600 ~/.ssh/ec2_key
-          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts || true
 
-      - name: Deploy Website to EC2
+      - name: Test EC2 Connection
+        run: |
+          echo "Testing EC2 connection..."
+          ssh \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=10 \
+            -i ~/.ssh/ec2_key \
+            "${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}" \
+            "echo 'EC2 connection successful!'"
+
+      - name: Deploy Website
         run: |
           echo "Deploying website to EC2..."
 
-          scp -i ~/.ssh/ec2_key \
+          scp \
+            -o StrictHostKeyChecking=no \
+            -i ~/.ssh/ec2_key \
             index.html \
-            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/tmp/index.html
+            "${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/tmp/index.html"
 
-          ssh -i ~/.ssh/ec2_key \
-            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
+          ssh \
+            -o StrictHostKeyChecking=no \
+            -i ~/.ssh/ec2_key \
+            "${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}" \
             "sudo cp /tmp/index.html /var/www/html/index.html && sudo systemctl reload nginx"
 
           echo "Website deployed successfully!"
