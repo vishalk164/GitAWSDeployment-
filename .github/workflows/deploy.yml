@@ -1,6 +1,9 @@
 name: HTML Application CI/CD
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -62,9 +65,13 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key
+          echo "${{ secrets.EC2_SSH_KEY_B64 }}" | base64 --decode > ~/.ssh/ec2_key
           chmod 600 ~/.ssh/ec2_key
-          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts || true
+
+      - name: Validate SSH Key
+        run: |
+          ssh-keygen -y -f ~/.ssh/ec2_key > /dev/null
+          echo "SSH key validation successful!"
 
       - name: Test EC2 Connection
         run: |
