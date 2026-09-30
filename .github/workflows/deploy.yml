@@ -60,27 +60,52 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup SSH
+        env:
+          EC2_SSH_KEY_B64: ${{ secrets.EC2_SSH_KEY_B64 }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
+          set -euo pipefail
+
+          for secret_name in EC2_SSH_KEY_B64 EC2_USERNAME EC2_HOST; do
+            if [[ -z "${!secret_name}" ]]; then
+              echo "::error::Required GitHub Actions secret ${secret_name} is missing or empty. Configure it in the repository Actions secrets."
+              exit 1
+            fi
+          done
+
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY_B64 }}" | base64 --decode > ~/.ssh/ec2_key
+          if ! printf '%s' "$EC2_SSH_KEY_B64" | base64 --decode > ~/.ssh/ec2_key; then
+            echo "::error::EC2_SSH_KEY_B64 must contain a base64-encoded SSH private key."
+            exit 1
+          fi
           chmod 600 ~/.ssh/ec2_key
 
       - name: Validate SSH Key
         run: |
-          ssh-keygen -y -f ~/.ssh/ec2_key > /dev/null
+          if ! ssh-keygen -y -f ~/.ssh/ec2_key > /dev/null; then
+            echo "::error::EC2_SSH_KEY_B64 must decode to a valid SSH private key."
+            exit 1
+          fi
           echo "SSH key validation successful!"
 
       - name: Test EC2 Connection
+        env:
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           echo "Testing EC2 connection..."
           ssh \
             -o StrictHostKeyChecking=no \
             -o ConnectTimeout=10 \
             -i ~/.ssh/ec2_key \
-            "${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}" \
+            "$EC2_USERNAME@$EC2_HOST" \
             "echo 'EC2 connection successful!'"
 
       - name: Deploy Website
+        env:
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           echo "Deploying website to EC2..."
 
@@ -88,12 +113,12 @@ jobs:
             -o StrictHostKeyChecking=no \
             -i ~/.ssh/ec2_key \
             index.html \
-            "${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/tmp/index.html"
+            "$EC2_USERNAME@$EC2_HOST:/tmp/index.html"
 
           ssh \
             -o StrictHostKeyChecking=no \
             -i ~/.ssh/ec2_key \
-            "${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}" \
+            "$EC2_USERNAME@$EC2_HOST" \
             "sudo cp /tmp/index.html /var/www/html/index.html && sudo systemctl reload nginx"
 
           echo "Website deployed successfully!"
